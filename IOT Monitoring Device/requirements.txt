@@ -1,0 +1,4 @@
+APScheduler==3.9.1
+loguru==0.5.3
+mate3==0.6.2
+paho_mqtt==1.6.1
