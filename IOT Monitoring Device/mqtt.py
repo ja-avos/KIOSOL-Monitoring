@@ -41,10 +41,10 @@ def publish(client):
             print(f"Failed to send message to topic {topic}")
         msg_count += 1
 
-def run():
-    client = connect_mqtt()
-    client.loop_start()
-    publish(client)
+# def run():
+#     # client = connect_mqtt()
+#     # client.loop_start()
+#     # publish(client)
 
-if __name__ == '__main__':
-    run()
+# if __name__ == '__main__':
+#     run()

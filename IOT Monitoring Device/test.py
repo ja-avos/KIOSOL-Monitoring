@@ -5,6 +5,7 @@ from mate3.field_values import FieldValue
 from mqtt import connect_mqtt, publish
 
 import json, dataclasses
+from datetime import datetime
 from asyncio import run
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -57,6 +58,8 @@ class JSONEncoder(json.JSONEncoder):
 def read_and_send_variables(mate_client: Mate3Client, mqtt_client):
     devices = list_devices(mate_client.devices)
 
+    mqtt_client.publish(f"kiosol/last_date", datetime.now().isoformat())
+
     for device_name in devices:
         for port in devices[device_name]:
             variables = list_variables(mate_client.devices, device_name, port)
@@ -81,31 +84,47 @@ def main():
     logger.add(sys.stderr, level="INFO")
 
     mqttClient = connect_mqtt(
-        broker="localhost",
+        broker="mqtt.javos.dev",
         port=1883,
         client_id="mate3",
         username="",
         password="",
     )
 
+    scheduler = BlockingScheduler()
+    
+    def change_measure_interval(client, userdata, message):
+        logger.info(f"Changing measure interval to {message.payload}")
+        seconds = int(message.payload)
+        if seconds < 1:
+            scheduler.pause_job("measure")
+            logger.info("Measure job paused")
+        else:
+            scheduler.reschedule_job("measure", trigger=IntervalTrigger(seconds=seconds))
+
+    mqttClient.on_message = change_measure_interval
+
+    mqttClient.subscribe("kiosol/measure_interval")
+    mqttClient.loop_start()
+
+
     with Mate3Client(host="192.168.0.65") as client:
 
         # print(list_devices(client.devices))
         # print(list_variables(client.devices, "fndcs", 3))
-
-        scheduler = BlockingScheduler()
+        # print("")
+        scheduler.add_job(
+            read_and_send_variables,
+            trigger=IntervalTrigger(seconds=1),
+            id="measure",
+            args=[client, mqttClient],
+        )
 
         # scheduler.add_job(
-        #     read_and_send_variables,
+        #     read_and_send_variable,
         #     trigger=IntervalTrigger(seconds=1),
-        #     args=[client, mqttClient],
+        #     args=[client, mqttClient, "fndcs", 3, "battery_voltage"],
         # )
-
-        scheduler.add_job(
-            read_and_send_variable,
-            trigger=IntervalTrigger(seconds=1),
-            args=[client, mqttClient, "fndcs", 3, "battery_voltage"],
-        )
 
         scheduler.start()
         # read_and_send_variables(client, mqttClient)

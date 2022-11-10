@@ -1,0 +1,1 @@
+docker run --name timescaledb -it -p 5432:5432 -v "//$PWD/data:/home/postgres/pgdata/data" -e POSTGRES_PASSWORD=IOT2022! timescale/timescaledb:latest-pg14
