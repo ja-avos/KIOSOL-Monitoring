@@ -33,8 +33,7 @@ CREATE TABLE laboratory (
     "description" TEXT NOT NULL,
     latitude FLOAT,
     longitude FLOAT,
-    UNIQUE("name")
-    UNIQUE(latitude, longitude)
+    UNIQUE("name") UNIQUE(latitude, longitude)
 );
 
 CREATE TABLE device (
@@ -44,13 +43,13 @@ CREATE TABLE device (
     port TEXT NOT NULL,
 );
 
-CREATE TABLE "value" {
+CREATE TABLE "value" (
     time TIMESTAMPTZ,
     lab_id VARCHAR(50) NOT NULL REFERENCES laboratory(id),
     device_id VARCHAR(50) NOT NULL REFERENCES device(id),
     measurement_id VARCHAR(50) NOT NULL REFERENCES measurement(id),
     value FLOAT
-}
+);
 
 CREATE TABLE temp_value (
     time TIMESTAMPTZ,
@@ -68,37 +67,65 @@ CREATE TABLE user (
     email TEXT NOT NULL,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
-    
     UNIQUE(email)
 );
 
 SELECT create_hypertable('value', 'time');
 
 -- Continuous Aggregates Example
-CREATE VIEW measurements_15min WITH (timescaledb.continuous) AS
+
+CREATE VIEW values_15min WITH (timescaledb.continuous) AS
 SELECT time_bucket('15 minute', time) as bucket,
-    parameter_id,
+    lab_id,
+    device_id,
+    measurement_id,
     avg(value) as avg,
     max(value) as max,
     min(value) as min
-FROM measurements
+FROM "value"
 GROUP BY bucket,
-    parameter_id;
-CREATE VIEW measurements_hourly WITH (timescaledb.continuous) AS
+    lab_id,
+    device_id,
+    measurement_id;
+
+CREATE VIEW values_hourly WITH (timescaledb.continuous) AS
 SELECT time_bucket('1 hour', time) as bucket,
-    parameter_id,
+    lab_id,
+    device_id,
+    measurement_id,
     avg(value) as avg,
     max(value) as max,
     min(value) as min
-FROM measurements
+FROM "value"
 GROUP BY bucket,
-    parameter_id;
-CREATE VIEW measurements_daily WITH (timescaledb.continuous) AS
+    lab_id,
+    device_id,
+    measurement_id;
+
+CREATE VIEW values_daily WITH (timescaledb.continuous) AS
 SELECT time_bucket('1 day', time) as bucket,
-    parameter_id,
+    lab_id,
+    device_id,
+    measurement_id,
     avg(value) as avg,
     max(value) as max,
     min(value) as min
-FROM measurements
+FROM "value"
 GROUP BY bucket,
-    parameter_id;
+    lab_id,
+    device_id,
+    measurement_id;
+
+CREATE VIEW values_daily WITH (timescaledb.continuous) AS
+SELECT time_bucket('1 week', time) as bucket,
+    lab_id,
+    device_id,
+    measurement_id,
+    avg(value) as avg,
+    max(value) as max,
+    min(value) as min
+FROM "value"
+GROUP BY bucket,
+    lab_id,
+    device_id,
+    measurement_id;
