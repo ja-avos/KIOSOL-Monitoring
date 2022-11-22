@@ -31,7 +31,7 @@ def process_payload(topic:str, payload: str):
                 value = string_map.value
             
             saved_value = utils.create_value(lab_id=lab.id, device_id=device.id, measurement_id=measurement.id, value=value)
-            print(f"Saved value: {saved_value.id if saved_value != None else -1}")
+            # print(f"Saved value: {saved_value.id if saved_value != None else -1}")
         except Exception as e:
             pass
             # print("ERROR in process_payload:")
@@ -46,17 +46,28 @@ def process_mqtt_message(client, userdata, message):
         if len(topic.split('/')) == 3:
             process_payload(topic, payload)
         else:
-            print("Invalid topic. Skipping...")
-            print(f"Payload: {payload}")
+            pass
+            # print("Invalid topic. Skipping...")
+            # print(f"Payload: {payload}")
     except Exception as e:
         print("ERROR in process_mqtt_message:")
         print(e)
         print(topic)
 
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Connected to MQTT Broker :)!")
+        client.on_message = process_mqtt_message
+        client.subscribe("#")
+    else:
+        print("Failed to connect, return code %d", rc)
+
 def run():
     client = connect_mqtt(BROKER, PORT, client_id, username, password)
-    client.on_message = process_mqtt_message
-    client.subscribe("#")
+    # client.on_message = process_mqtt_message
+    # client.subscribe("#")
+    client.on_connect = on_connect
+    client.connect(BROKER, PORT)
     client.loop_forever()
 
 if __name__ == '__main__':

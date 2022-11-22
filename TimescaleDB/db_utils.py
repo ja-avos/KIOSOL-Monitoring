@@ -44,8 +44,6 @@ def get_or_create_lab(id, name) -> models.LaboratoryModel:
 
 def create_value(lab_id, device_id, measurement_id, value) -> models.ValueModel:
     try:
-        print("Creating value")
-        print(f"{lab_id} {device_id} {measurement_id} {value}")
         value = models.ValueModel(lab_id=lab_id, device_id=device_id, measurement_id=measurement_id, value=value)
         db.session.add(value)
         db.session.commit()

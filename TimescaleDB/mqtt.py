@@ -19,12 +19,17 @@ def connect_mqtt(broker=MQTT_BROKER, port=MQTT_PORT, client_id=client_id, userna
             print("Connected to MQTT Broker!")
         else:
             print("Failed to connect, return code %d", rc)
+    
+    def on_disconnect(client, userdata, rc):
+        if rc != 0:
+            print("Unexpected disconnection.")
 
     # Set Connecting Client ID
     client = mqtt_client.Client(client_id)
     client.username_pw_set(username, password)
-    client.on_connect = on_connect
-    client.connect(broker, port)
+    # client.on_connect = on_connect
+    # client.on_disconnect = on_disconnect
+    # client.connect(broker, port)
     return client
 
 def publish(client):
