@@ -1,0 +1,12 @@
+# Unit file for the python script that ingest the data from the MQTT
+[Unit]
+Description=Lab Monitoring Data Ingestion Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/calozanog/KIOSOL-Monitoring/TimescaleDB/venv/bin/python /home/calozanog/KIOSOL-Monitoring/TimescaleDB/data_ingestion.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
