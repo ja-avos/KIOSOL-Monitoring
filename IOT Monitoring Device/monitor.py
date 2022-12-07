@@ -84,7 +84,7 @@ def main():
     logger.add(sys.stderr, level="INFO")
 
     mqttClient = connect_mqtt(
-        broker="mqtt.javos.dev",
+        broker="157.253.242.156",
         port=1883,
         client_id="mate3",
         username="",
