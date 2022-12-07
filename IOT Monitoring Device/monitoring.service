@@ -1,0 +1,13 @@
+# Unit file for the python script that reads sensor data and send to MQTT
+[Unit]
+Description=Lab Monitoring Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart="/home/kiosol/Desktop/KIOSOL-Monitoring/IOT Monitoring Device/venv/bin/python" "/home/kiosol/Desktop/KIOSOL-Monitoring/IOT Monitoring Device/monitor.py"
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

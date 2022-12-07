@@ -7,6 +7,7 @@ After=network.target
 Type=simple
 ExecStart=/home/calozanog/KIOSOL-Monitoring/TimescaleDB/venv/bin/python /home/calozanog/KIOSOL-Monitoring/TimescaleDB/data_ingestion.py
 Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
