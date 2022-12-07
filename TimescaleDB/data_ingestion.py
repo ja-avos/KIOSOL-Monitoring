@@ -4,7 +4,7 @@ import models
 import random
 import json
 
-BROKER = "mqtt.javos.dev"
+BROKER = "157.253.242.156"
 PORT = 1883
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = ""
