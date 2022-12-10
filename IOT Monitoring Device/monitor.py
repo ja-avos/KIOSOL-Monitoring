@@ -115,7 +115,7 @@ def main():
         # print("")
         scheduler.add_job(
             read_and_send_variables,
-            trigger=IntervalTrigger(seconds=1),
+            trigger=IntervalTrigger(seconds=30),
             id="measure",
             args=[client, mqttClient],
         )
