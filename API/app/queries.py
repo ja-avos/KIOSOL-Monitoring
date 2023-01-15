@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-import models
-import schemas
+from app import models
+from app import schemas
 
 def get_units(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.UnitModel).offset(skip).limit(limit).all()

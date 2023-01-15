@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Path, Depends, Request
-from config import SessionLocal
+from app.config import SessionLocal
 from sqlalchemy.orm import Session
-from schemas import Response, RequestDevice, RequestLaboratory, RequestMeasurement, RequestUnit, RequestValue, DeviceSchema, LaboratorySchema, MeasurementSchema, UnitSchema, ValueSchema, StringMapSchema, ValueCompressedSchema
-import queries
+from app.schemas import Response, RequestDevice, RequestLaboratory, RequestMeasurement, RequestUnit, RequestValue, DeviceSchema, LaboratorySchema, MeasurementSchema, UnitSchema, ValueSchema, StringMapSchema, ValueCompressedSchema
+from app import queries
 
 router = APIRouter()
 

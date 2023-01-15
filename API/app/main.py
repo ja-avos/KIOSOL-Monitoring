@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from config import engine
-import router
+from app.config import engine
+from app import router
 
 app = FastAPI()
 

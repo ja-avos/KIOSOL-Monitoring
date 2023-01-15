@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
-import models
+from app import models
 import os
 
 DATABASE_HOST = os.getenv('POSTGRES_HOST', '157.253.242.151')
